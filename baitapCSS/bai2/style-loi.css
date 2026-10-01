@@ -1,0 +1,231 @@
+/* =====================================================================
+   Blakletterpress — Trang khuyến mãi thiệp Tết 2026
+   BÀI TẬP 2 — CSS ĐÃ ĐƯỢC PHÂN TÍCH VÀ SỬA LỖI TINH VI BẰNG AI
+   ===================================================================== */
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: "Segoe UI", Arial, sans-serif;
+	color: #222;
+	background: #f4f1ea;
+	line-height: 1.5;
+}
+
+a {
+	color: inherit;
+}
+
+/* SỬA LỖI TINH VI 1:
+   Đổi overflow-x: hidden thành overflow-x: clip.
+   Nguyên nhân: Thuộc tính overflow (hidden/auto/scroll) trên phần tử cha (.page)
+   sẽ làm vô hiệu hóa thuộc tính position: sticky của phần tử con (.site-header)
+   khi cuộn cả trang (viewport scrolling). Dùng 'clip' vẫn ngăn tràn ngang
+   nhưng không tạo scroll-container mới, giữ cho sticky hoạt động hoàn hảo. */
+.page {
+	overflow-x: clip;
+}
+
+/* ===== Header / thanh điều hướng ===== */
+.site-header {
+	background: #2b2b2b;
+	position: sticky;
+	top: 0;
+	z-index: 100;
+}
+
+.header-inner {
+	max-width: 1000px;
+	margin: 0 auto;
+	padding: 16px 24px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.brand {
+	color: #fff;
+	font-size: 24px;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.main-nav ul {
+	list-style: none;
+	display: flex;
+	gap: 24px;
+}
+
+.main-nav a {
+	color: #ddd;
+	text-decoration: none;
+}
+
+.main-nav a:hover {
+	color: #fff;
+}
+
+/* ===== Hero ===== */
+.hero {
+	position: relative;
+	height: 360px;
+	overflow: hidden;
+}
+
+/* BẢO VỆ ĐOẠN ĐÚNG:
+   transform: scale(1.08) là hiệu ứng chủ đích để zoom nhẹ ảnh nền hero,
+   tạo chiều sâu và tránh viền mờ khi render. Giữ nguyên. */
+.hero-bg {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transform: scale(1.08);
+}
+
+.hero-overlay {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 80%;
+	max-width: 560px;
+	text-align: center;
+	color: #fff;
+	text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.hero-overlay h1 {
+	font-size: 34px;
+	margin-bottom: 12px;
+}
+
+.hero-overlay p {
+	font-size: 18px;
+	margin-bottom: 20px;
+}
+
+.hero-btn {
+	display: inline-block;
+	padding: 12px 28px;
+	background: #c0392b;
+	color: #fff;
+	text-decoration: none;
+	border-radius: 4px;
+}
+
+/* ===== Khu sản phẩm ===== */
+/* BẢO VỆ ĐOẠN ĐÚNG:
+   margin: -48px auto 48px; cùng position: relative; z-index: 1; và border-radius: 16px 16px 0 0;
+   là kỹ thuật thiết kế hiện đại giúp danh mục sản phẩm đè lên một phần ảnh hero. Giữ nguyên. */
+.products {
+	max-width: 1000px;
+	margin: -48px auto 48px;
+	padding: 24px 24px 0;
+	position: relative;
+	z-index: 1;
+	background: #f4f1ea;
+	border-radius: 16px 16px 0 0;
+}
+
+.products h2 {
+	margin-bottom: 24px;
+	font-size: 28px;
+}
+
+.card-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 24px;
+}
+
+/* SỬA LỖI TINH VI 2:
+   Đổi box-sizing: content-box thành box-sizing: border-box.
+   Nguyên nhân: content-box khiến padding (16px*2) và border (1px*2) cộng dồn vào
+   bề rộng flex-basis calc((100% - 48px) / 3), làm tổng chiều rộng 3 thẻ vượt quá 100%,
+   gây hiện tượng rớt hàng (card thứ 3 bị đẩy xuống dòng mới). */
+.card {
+	flex: 0 0 calc((100% - 48px) / 3);
+	min-height: 320px;
+	position: relative;
+	box-sizing: border-box;
+	background: #fff;
+	border: 1px solid #e0d8c8;
+	border-radius: 8px;
+	padding: 16px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* SỬA LỖI TINH VI 3:
+   Thêm z-index: 10 cho .badge.
+   Nguyên nhân: .card img có position: relative; z-index: 2;, trong khi .badge nằm trước
+   ảnh trong HTML và chỉ có position: absolute mặc định z-index auto (0), nên bị ảnh đè lên
+   và che khuất hoàn toàn nhãn "-20%". Thêm z-index: 10 giúp nhãn luôn nổi rõ ràng trên ảnh. */
+.badge {
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	background: #c0392b;
+	color: #fff;
+	font-size: 14px;
+	font-weight: bold;
+	padding: 4px 10px;
+	border-radius: 20px;
+	z-index: 10;
+}
+
+.card img {
+	display: block;
+	width: 100%;
+	height: 180px;
+	object-fit: cover;
+	border-radius: 4px;
+	position: relative;
+	z-index: 2;
+}
+
+.card-body h3 {
+	margin: 12px 0 8px;
+	font-size: 20px;
+}
+
+.card-body p {
+	margin-bottom: 8px;
+	font-size: 15px;
+	color: #555;
+}
+
+.card-body .price {
+	color: #c0392b;
+	font-weight: bold;
+	font-size: 18px;
+}
+
+/* ===== Nút lên đầu trang ===== */
+.back-to-top {
+	position: fixed;
+	bottom: 24px;
+	right: 24px;
+	width: 48px;
+	height: 48px;
+	background: #2b2b2b;
+	color: #fff;
+	text-align: center;
+	line-height: 48px;
+	font-size: 22px;
+	text-decoration: none;
+	border-radius: 50%;
+	z-index: 200;
+}
+
+/* ===== Footer ===== */
+.site-footer {
+	padding: 32px 24px;
+	background: #2b2b2b;
+	color: #cfcfcf;
+	text-align: center;
+	font-size: 14px;
+}
