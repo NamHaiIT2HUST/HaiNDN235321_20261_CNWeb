@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Báo cáo Bài tập React CRUD | Nguyễn Đào Nam Hải</title>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-light: rgba(99, 102, 241, 0.15);
+      --primary-border: rgba(99, 102, 241, 0.3);
+      --success: #10b981;
+      --success-light: rgba(16, 185, 129, 0.15);
+      --danger: #ef4444;
+      --danger-light: rgba(239, 68, 68, 0.15);
+      --warning: #f59e0b;
+      --warning-light: rgba(245, 158, 11, 0.15);
+      --info: #38bdf8;
+      --info-light: rgba(56, 189, 248, 0.15);
+      --bg: #0b0f19;
+      --surface: #111827;
+      --surface-card: #1f2937;
+      --surface-border: #374151;
+      --text: #f9fafb;
+      --text-muted: #9ca3af;
+      --text-subtle: #6b7280;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.6);
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Ambient lighting */
+    body::before {
+      content: "";
+      position: fixed;
+      top: -200px;
+      left: 15%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(99, 102, 241, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      bottom: -200px;
+      right: 15%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.1) 0%, rgba(56, 189, 248, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Navbar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(11, 15, 25, 0.85);
+      border-bottom: 1px solid var(--surface-border);
+      padding: 0.85rem 1.5rem;
+    }
+    .navbar-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #6366f1, #3b82f6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .nav-link:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .nav-link.btn-live {
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    }
+    .nav-link.btn-live:hover {
+      background: linear-gradient(135deg, #4338ca, #4f46e5);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1050px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 5rem;
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+
+    /* Hero Banner */
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(31, 41, 55, 0.9), rgba(17, 24, 39, 0.9));
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 2rem;
+      margin-bottom: 3rem;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-banner::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, #6366f1, #38bdf8);
+    }
+    .hero-badges {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.3rem 0.75rem;
+      border-radius: 999px;
+      background: var(--primary-light);
+      color: #a5b4fc;
+      border: 1px solid var(--primary-border);
+    }
+    .badge.badge-success {
+      background: var(--success-light);
+      color: #6ee7b7;
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    .hero-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-desc {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      margin-bottom: 1.5rem;
+      max-width: 850px;
+    }
+    .student-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--surface-border);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .meta-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-subtle);
+      font-weight: 600;
+    }
+    .meta-value {
+      font-size: 0.95rem;
+      color: #f3f4f6;
+      font-weight: 600;
+    }
+
+    /* Section Styling */
+    .report-section {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem 2rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--surface-border);
+    }
+    .section-num {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(59, 130, 246, 0.25));
+      border: 1px solid var(--primary-border);
+      color: #a5b4fc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #f9fafb;
+    }
+
+    /* Component Tree Visualization */
+    .tree-wrapper {
+      background: #0b0f19;
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+    .tree {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2.5rem;
+      min-width: 720px;
+      position: relative;
+    }
+    .tree-node {
+      background: var(--surface-card);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.4rem;
+      text-align: center;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      z-index: 2;
+    }
+    .tree-node:hover {
+      border-color: #6366f1;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+    }
+    .tree-node.root {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(79, 70, 229, 0.25));
+      border: 2px solid #6366f1;
+    }
+    .tree-node.branch {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
+      border: 1px solid #4b5563;
+    }
+    .tree-node.leaf {
+      background: rgba(55, 65, 81, 0.5);
+      border: 1px dashed #4b5563;
+    }
+    .node-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .node-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    .node-state {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      background: rgba(99, 102, 241, 0.15);
+      color: #a5b4fc;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      margin-top: 0.35rem;
+      display: inline-block;
+    }
+    .tree-row {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      width: 100%;
+      position: relative;
+    }
+    .tree-sub-row {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      position: relative;
+    }
+
+    /* Flowchart for State Lifting */
+    .flowchart-wrapper {
+      background: #0b0f19;
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+
+    /* Explanation Boxes */
+    .explain-card {
+      background: var(--surface-card);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .explain-card.highlight-card {
+      border-left: 4px solid #6366f1;
+    }
+    .explain-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .explain-text {
+      color: #d1d5db;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+    .explain-text strong {
+      color: #fff;
+    }
+
+    /* Table */
+    .table-box {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      font-size: 0.92rem;
+    }
+    .table-box th {
+      background: #1f2937;
+      color: #f3f4f6;
+      font-weight: 700;
+      padding: 0.9rem 1.2rem;
+      text-align: left;
+      border-bottom: 1px solid var(--surface-border);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .table-box td {
+      padding: 0.9rem 1.2rem;
+      border-bottom: 1px solid rgba(55, 65, 81, 0.6);
+      color: #e5e7eb;
+      vertical-align: top;
+    }
+    .table-box tr:last-child td {
+      border-bottom: none;
+    }
+    .table-box tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .code-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      background: rgba(99, 102, 241, 0.15);
+      color: #a5b4fc;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      display: inline-block;
+    }
+    .type-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      background: rgba(56, 189, 248, 0.15);
+      color: #7dd3fc;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    /* Bug / Error Comparison Cards */
+    .bug-card {
+      background: var(--surface-card);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .bug-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .bug-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .bug-tag.danger {
+      background: var(--danger-light);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .bug-tag.warning {
+      background: var(--warning-light);
+      color: #fde68a;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .bug-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .code-comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .code-block {
+      background: #0b0f19;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      border: 1px solid var(--surface-border);
+    }
+    .code-block.wrong {
+      border-top: 3px solid #ef4444;
+    }
+    .code-block.right {
+      border-top: 3px solid #10b981;
+    }
+    .code-header {
+      padding: 0.5rem 0.85rem;
+      background: #111827;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--surface-border);
+    }
+    pre {
+      padding: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      color: #e2e8f0;
+    }
+    pre .highlight-err {
+      color: #f87171;
+      font-weight: 700;
+      background: rgba(239, 68, 68, 0.15);
+      padding: 0 4px;
+      border-radius: 2px;
+    }
+    pre .highlight-fix {
+      color: #4ade80;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.15);
+      padding: 0 4px;
+      border-radius: 2px;
+    }
+
+    /* Links Box */
+    .links-box {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    .link-card {
+      background: var(--surface-card);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-decoration: none;
+      color: #fff;
+      transition: var(--transition);
+    }
+    .link-card:hover {
+      border-color: #6366f1;
+      transform: translateY(-2px);
+      background: #283548;
+    }
+    .link-info {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    .link-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+    .link-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .link-url {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--surface-border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-subtle);
+      font-size: 0.88rem;
+      background: rgba(11, 15, 25, 0.9);
+    }
+    .footer a {
+      color: #818cf8;
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 1.5rem 1rem 3rem; }
+      .hero-title { font-size: 1.6rem; }
+      .code-comparison { grid-template-columns: 1fr; }
+      .tree { min-width: 100%; }
+      .tree-row { flex-direction: column; align-items: center; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <header class="navbar">
+    <div class="navbar-inner">
+      <a href="../index.html" class="brand">
+        <div class="brand-icon">
+          <i class="fab fa-react"></i>
+        </div>
+        <span>Báo cáo <strong>React CRUD</strong></span>
+      </a>
+
+      <nav class="nav-actions">
+        <a href="index.html" class="nav-link btn-live">
+          <i class="fas fa-play"></i>
+          <span>Chạy ứng dụng CRUD</span>
+        </a>
+        <a href="../index.html" class="nav-link">
+          <i class="fas fa-home"></i>
+          <span>Portfolio</span>
+        </a>
+        <a href="https://github.com/NamHaiIT2HUST/HaiNDN235321_20261_CNWeb" target="_blank" rel="noopener noreferrer" class="nav-link">
+          <i class="fab fa-github"></i>
+          <span>Repo</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+      <div class="hero-badges">
+        <span class="badge"><i class="fab fa-react"></i> React 18 Functional Components</span>
+        <span class="badge badge-success"><i class="fas fa-check-circle"></i> Đã hoàn thiện &amp; Triển khai</span>
+        <span class="badge"><i class="fas fa-code-branch"></i> State Lifting &amp; Hooks</span>
+      </div>
+      <h1 class="hero-title">BÁO CÁO BÀI TẬP: XÂY DỰNG ỨNG DỤNG REACT CRUD</h1>
+      <p class="hero-desc">
+        Báo cáo kết quả xây dựng ứng dụng Quản lý người dùng với React, phân tích cấu trúc cây Component, giải thích cơ chế nâng trạng thái (State Lifting), lập bảng đặc tả Props và tổng hợp các lỗi phát sinh cùng phương pháp giải quyết triệt để.
+      </p>
+
+      <div class="student-meta">
+        <div class="meta-item">
+          <span class="meta-label">Sinh viên thực hiện</span>
+          <span class="meta-value">Nguyễn Đào Nam Hải</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Mã số sinh viên</span>
+          <span class="meta-value">235321</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Học phần / Học kỳ</span>
+          <span class="meta-value">Công nghệ Web &amp; DVTT (20261)</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Tên miền triển khai</span>
+          <span class="meta-value">namhai23905.id.vn</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MỤC 1: SƠ ĐỒ CÂY COMPONENT -->
+    <section class="report-section" id="component-tree">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <h2 class="section-title">Sơ đồ Component (Component Tree)</h2>
+      </div>
+
+      <p class="explain-text" style="margin-bottom: 1rem;">
+        Ứng dụng được thiết kế theo tư tưởng phân rã thành các <strong>Functional Component</strong> độc lập, mỗi component đảm nhận một trách nhiệm duy nhất (Single Responsibility Principle):
+      </p>
+
+      <!-- Visual Tree Diagram -->
+      <div class="tree-wrapper">
+        <div class="tree">
+          <!-- Root Node: App -->
+          <div class="tree-node root">
+            <div class="node-title">
+              <i class="fab fa-react" style="color: #61dafb;"></i>
+              &lt;App /&gt; (Root Component)
+            </div>
+            <div class="node-sub">Quản lý State tập trung toàn cục</div>
+            <div class="node-state">State: [kw, setKeyword], [newUser, setNewUser]</div>
+          </div>
+
+          <!-- Connector SVG -->
+          <svg width="680" height="40" style="margin: -20px 0; overflow: visible;">
+            <path d="M 340 0 L 340 20 L 100 20 L 100 40 M 340 20 L 340 40 M 340 20 L 580 20 L 580 40" 
+                  stroke="#4b5563" stroke-width="2" fill="none" stroke-dasharray="4" />
+          </svg>
+
+          <!-- Row of Children -->
+          <div class="tree-row">
+            <!-- SearchForm -->
+            <div class="tree-node branch" style="flex: 1; max-width: 210px;">
+              <div class="node-title">
+                <i class="fas fa-search" style="color: #38bdf8;"></i>
+                &lt;SearchForm /&gt;
+              </div>
+              <div class="node-sub">Ô tìm kiếm người dùng</div>
+              <div class="node-state">Nhận: onChangeValue</div>
+            </div>
+
+            <!-- AddUser -->
+            <div class="tree-node branch" style="flex: 1; max-width: 210px;">
+              <div class="node-title">
+                <i class="fas fa-user-plus" style="color: #10b981;"></i>
+                &lt;AddUser /&gt;
+              </div>
+              <div class="node-sub">Form thêm người dùng mới</div>
+              <div class="node-state">Nhận: onAdd</div>
+              <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">Local State: adding, user</div>
+            </div>
+
+            <!-- ResultTable -->
+            <div class="tree-node branch" style="flex: 1; max-width: 230px;">
+              <div class="node-title">
+                <i class="fas fa-table" style="color: #f59e0b;"></i>
+                &lt;ResultTable /&gt;
+              </div>
+              <div class="node-sub">Bảng hiển thị, lọc, sửa, xóa</div>
+              <div class="node-state">Nhận: keyword, user, onAdded</div>
+              <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">Local State: users, loading, editing</div>
+            </div>
+          </div>
+
+          <!-- Sub children connector -->
+          <div style="width: 100%; display: flex; justify-content: flex-end; padding-right: 40px; margin-top: -15px;">
+            <svg width="240" height="30" style="overflow: visible;">
+              <path d="M 120 0 L 120 15 L 40 15 L 40 30 M 120 15 L 200 15 L 200 30" 
+                    stroke="#4b5563" stroke-width="2" fill="none" stroke-dasharray="3" />
+            </svg>
+          </div>
+
+          <!-- Sub branches of ResultTable -->
+          <div style="width: 100%; display: flex; justify-content: flex-end; gap: 1rem; padding-right: 0;">
+            <div class="tree-node leaf" style="max-width: 170px;">
+              <div class="node-title" style="font-size: 0.9rem;">
+                <i class="fas fa-list-ul"></i> User Rows
+              </div>
+              <div class="node-sub">Render users.map()</div>
+            </div>
+            <div class="tree-node leaf" style="max-width: 170px;">
+              <div class="node-title" style="font-size: 0.9rem;">
+                <i class="fas fa-edit"></i> Edit Modal
+              </div>
+              <div class="node-sub">Sửa &amp; Deep copy address</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phân tích vai trò -->
+      <div class="explain-card" style="margin-top: 1.5rem;">
+        <div class="explain-title">
+          <i class="fas fa-info-circle" style="color: #818cf8;"></i>
+          Vai trò chi tiết của từng Component trong cây:
+        </div>
+        <ul style="padding-left: 1.5rem; color: #d1d5db; display: flex; flex-direction: column; gap: 0.5rem;">
+          <li><strong>App (Root Component):</strong> Nắm giữ vị trí cao nhất trong phân cấp, đóng vai trò "nhạc trưởng". App quản lý toàn bộ các state cần chia sẻ giữa các nhánh con (<code>kw</code> và <code>newUser</code>), sau đó phân phối chúng thông qua Props.</li>
+          <li><strong>SearchForm:</strong> Chịu trách nhiệm render thanh tìm kiếm, nhận input gõ phím từ người dùng và kích hoạt sự kiện đẩy từ khóa lên component cha.</li>
+          <li><strong>AddUser:</strong> Quản lý form nhập liệu thêm mới người dùng (với các trường đơn và trường lồng nhau <code>address</code>). Khi người dùng nhấn nút thêm, component đóng gói dữ liệu và gọi hàm callback gửi lên App.</li>
+          <li><strong>ResultTable:</strong> Chịu trách nhiệm nạp dữ liệu người dùng ban đầu từ Mock API (<code>jsonplaceholder.typicode.com/users</code>) qua <code>useEffect</code>, thực hiện lọc danh sách dựa trên <code>keyword</code> nhận từ App, lắng nghe người dùng mới qua prop <code>user</code>, đồng thời trực tiếp xử lý các nghiệp vụ Sửa (Edit Modal) và Xóa (Delete).</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- MỤC 2: SƠ ĐỒ LUỒNG DỮ LIỆU & STATE LIFTING -->
+    <section class="report-section" id="state-lifting">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <h2 class="section-title">Sơ đồ Luồng dữ liệu &amp; Nâng trạng thái (State Lifting)</h2>
+      </div>
+
+      <!-- Sơ đồ luồng dữ liệu trực quan -->
+      <div class="flowchart-wrapper">
+        <svg viewBox="0 0 900 380" style="width: 100%; height: auto; font-family: 'Plus Jakarta Sans', sans-serif;">
+          <!-- Nền và viền App -->
+          <rect x="250" y="20" width="400" height="90" rx="14" fill="#1e293b" stroke="#6366f1" stroke-width="2.5" />
+          <text x="450" y="52" fill="#ffffff" font-size="16" font-weight="700" text-anchor="middle">Component Cha: &lt;App /&gt;</text>
+          <rect x="280" y="65" width="160" height="28" rx="6" fill="rgba(99, 102, 241, 0.2)" stroke="#818cf8" stroke-width="1" />
+          <text x="360" y="84" fill="#c7d2fe" font-size="12" font-family="JetBrains Mono" text-anchor="middle">State: [kw, setKeyword]</text>
+          <rect x="460" y="65" width="165" height="28" rx="6" fill="rgba(16, 185, 129, 0.2)" stroke="#34d399" stroke-width="1" />
+          <text x="542" y="84" fill="#a7f3d0" font-size="12" font-family="JetBrains Mono" text-anchor="middle">State: [newUser, setNewUser]</text>
+
+          <!-- Component SearchForm -->
+          <rect x="40" y="240" width="220" height="90" rx="12" fill="#1e293b" stroke="#38bdf8" stroke-width="1.8" />
+          <text x="150" y="272" fill="#ffffff" font-size="15" font-weight="700" text-anchor="middle">&lt;SearchForm /&gt;</text>
+          <text x="150" y="295" fill="#94a3b8" font-size="12" text-anchor="middle">Nhập từ khóa tìm kiếm</text>
+          <text x="150" y="315" fill="#38bdf8" font-size="11" font-family="JetBrains Mono" text-anchor="middle">input onChange</text>
+
+          <!-- Component AddUser -->
+          <rect x="340" y="240" width="220" height="90" rx="12" fill="#1e293b" stroke="#10b981" stroke-width="1.8" />
+          <text x="450" y="272" fill="#ffffff" font-size="15" font-weight="700" text-anchor="middle">&lt;AddUser /&gt;</text>
+          <text x="450" y="295" fill="#94a3b8" font-size="12" text-anchor="middle">Form nhập người dùng mới</text>
+          <text x="450" y="315" fill="#34d399" font-size="11" font-family="JetBrains Mono" text-anchor="middle">onAdd(newUser)</text>
+
+          <!-- Component ResultTable -->
+          <rect x="640" y="240" width="230" height="110" rx="12" fill="#1e293b" stroke="#f59e0b" stroke-width="1.8" />
+          <text x="755" y="270" fill="#ffffff" font-size="15" font-weight="700" text-anchor="middle">&lt;ResultTable /&gt;</text>
+          <text x="755" y="292" fill="#94a3b8" font-size="12" text-anchor="middle">Lọc theo keyword</text>
+          <text x="755" y="312" fill="#94a3b8" font-size="12" text-anchor="middle">Cập nhật khi có user mới</text>
+          <text x="755" y="334" fill="#fbbf24" font-size="11" font-family="JetBrains Mono" text-anchor="middle">Gọi onAdded() reset</text>
+
+          <!-- MŨI TÊN 1: SearchForm -> App (State Lifting Callback) -->
+          <defs>
+            <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8" />
+            </marker>
+            <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#34d399" />
+            </marker>
+            <marker id="arrow-indigo" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#818cf8" />
+            </marker>
+            <marker id="arrow-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#fbbf24" />
+            </marker>
+          </defs>
+
+          <!-- 1. SearchForm gửi text lên App -->
+          <path d="M 150 240 C 150 160, 310 160, 330 115" fill="none" stroke="#38bdf8" stroke-width="2.2" marker-end="url(#arrow-blue)" />
+          <rect x="140" y="160" width="165" height="24" rx="4" fill="#0b0f19" stroke="#38bdf8" stroke-width="1" />
+          <text x="222" y="176" fill="#38bdf8" font-size="11" font-family="JetBrains Mono" text-anchor="middle">(1) onChangeValue(val)</text>
+
+          <!-- 2. AddUser gửi user lên App -->
+          <path d="M 450 240 L 450 120" fill="none" stroke="#34d399" stroke-width="2.2" marker-end="url(#arrow-green)" />
+          <rect x="458" y="160" width="125" height="24" rx="4" fill="#0b0f19" stroke="#34d399" stroke-width="1" />
+          <text x="520" y="176" fill="#34d399" font-size="11" font-family="JetBrains Mono" text-anchor="middle">(2) onAdd(user)</text>
+
+          <!-- 3. App truyền keyword xuống ResultTable -->
+          <path d="M 590 110 C 620 150, 710 170, 720 235" fill="none" stroke="#818cf8" stroke-width="2.2" marker-end="url(#arrow-indigo)" />
+          <rect x="650" y="145" width="140" height="24" rx="4" fill="#0b0f19" stroke="#818cf8" stroke-width="1" />
+          <text x="720" y="161" fill="#c7d2fe" font-size="11" font-family="JetBrains Mono" text-anchor="middle">(3) keyword={kw}</text>
+
+          <!-- 4. App truyền user & nhận onAdded từ ResultTable -->
+          <path d="M 640 90 C 760 110, 810 170, 800 235" fill="none" stroke="#fbbf24" stroke-width="2.2" marker-end="url(#arrow-amber)" />
+          <rect x="740" y="180" width="150" height="24" rx="4" fill="#0b0f19" stroke="#fbbf24" stroke-width="1" />
+          <text x="815" y="196" fill="#fde68a" font-size="11" font-family="JetBrains Mono" text-anchor="middle">(4) user={newUser}</text>
+        </svg>
+      </div>
+
+      <!-- Trả lời câu hỏi trọng tâm -->
+      <div class="explain-card highlight-card">
+        <div class="explain-title">
+          <i class="fas fa-question-circle" style="color: #6366f1;"></i>
+          Câu hỏi: Tại sao state "kw" và "newUser" lại được đặt ở component App mà không đặt ở SearchForm hay AddUser?
+        </div>
+        
+        <div class="explain-text" style="display: flex; flex-direction: column; gap: 0.85rem;">
+          <p>
+            Đây là bài toán kinh điển giải quyết bằng kỹ thuật <strong>Lifting State Up (Nâng trạng thái lên cha)</strong> trong React vì các lý do cốt lõi sau:
+          </p>
+
+          <p>
+            <strong>1. Luồng dữ liệu một chiều (One-way Data Flow) và quan hệ giữa các Component ngang hàng (Sibling Components):</strong><br />
+            Trong kiến trúc React, dữ liệu chỉ truyền từ trên xuống dưới (từ Cha xuống Con) thông qua <code>Props</code>. Hai component con cùng cấp không thể trực tiếp nói chuyện hoặc can thiệp vào state của nhau. 
+            <code>SearchForm</code>, <code>AddUser</code> và <code>ResultTable</code> là ba component ngang hàng (anh/em ruột) cùng nằm trong <code>App</code>.
+          </p>
+
+          <p>
+            <strong>2. Phân tích đối với state "kw" (Từ khóa tìm kiếm):</strong><br />
+            • Nơi phát sinh sự kiện thay đổi dữ liệu: Người dùng gõ phím tại thẻ <code>&lt;input&gt;</code> nằm trong <code>SearchForm</code>.<br />
+            • Nơi tiêu thụ dữ liệu để lọc: Danh sách người dùng <code>users</code> và biểu thức <code>users.filter(...)</code> lại nằm trọn vẹn trong <code>ResultTable</code>.<br />
+            ➔ Nếu ta để state <code>kw</code> nằm cục bộ bên trong <code>SearchForm</code>, dữ liệu từ khóa sẽ bị "giam hãm" (encapsulated) tại đó. <code>ResultTable</code> sẽ hoàn toàn không thể biết được người dùng đang gõ gì để tiến hành lọc dữ liệu. Do đó, state <code>kw</code> bắt buộc phải được "nâng" lên component cha chung gần nhất là <code>App</code>. <code>App</code> truyền hàm setter <code>setKeyword</code> xuống cho <code>SearchForm</code> kích hoạt, đồng thời truyền giá trị <code>kw</code> xuống <code>ResultTable</code> để lọc bảng.
+          </p>
+
+          <p>
+            <strong>3. Phân tích đối với state "newUser" (Người dùng mới tạo):</strong><br />
+            • Nơi thu thập dữ liệu: Form nhập liệu modal/inline thuộc về component <code>AddUser</code>.<br />
+            • Nơi quản lý và hiển thị danh sách: Mảng dữ liệu người dùng <code>users</code> thuộc về <code>ResultTable</code>.<br />
+            ➔ Tương tự như trên, khi người dùng bấm "Thêm", <code>AddUser</code> không thể tự mình nhảy sang <code>ResultTable</code> để chèn vào mảng <code>users</code>. Giải pháp chuẩn là <code>AddUser</code> đẩy đối tượng mới lên <code>App</code> thông qua callback <code>onAdd(user)</code>. Sau đó <code>App</code> lưu vào <code>newUser</code> và chuyển tiếp xuống <code>ResultTable</code> qua prop <code>user={newUser}</code>. Tại <code>ResultTable</code>, hook <code>useEffect([user])</code> sẽ phát hiện thay đổi và đưa người dùng mới vào mảng, rồi báo ngược lại cho App thông qua callback <code>onAdded()</code> để giải phóng state (đưa về <code>null</code>).
+          </p>
+
+          <p>
+            <strong>4. Tuân thủ nguyên lý Single Source of Truth (Nguồn chân lý duy nhất):</strong><br />
+            Đặt state tập trung tại <code>App</code> giúp ứng dụng dễ kiểm soát luồng dữ liệu, tránh tình trạng bất đồng bộ dữ liệu giữa các thành phần giao diện, code minh bạch, dễ bảo trì và mở rộng sau này.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MỤC 3: MÔ TẢ PROPS -->
+    <section class="report-section" id="props-description">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <h2 class="section-title">Mô tả Props được truyền từ App xuống các Component con</h2>
+      </div>
+
+      <p class="explain-text">
+        Dưới đây là bảng đặc tả đầy đủ các Props được truyền từ component cha <code>App</code> xuống ba component con, thể hiện chính xác nguyên lý State Lifting và One-way Data Binding:
+      </p>
+
+      <table class="table-box">
+        <thead>
+          <tr>
+            <th style="width: 150px;">Component nhận</th>
+            <th style="width: 150px;">Tên Prop</th>
+            <th style="width: 130px;">Kiểu dữ liệu</th>
+            <th style="width: 140px;">Chiều truyền</th>
+            <th>Ý nghĩa và Chức năng hoạt động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>SearchForm</strong></td>
+            <td><span class="code-pill">onChangeValue</span></td>
+            <td><span class="type-pill">Function (callback)</span></td>
+            <td>Cha ➔ Con (callback kích hoạt ngược lên Cha)</td>
+            <td>
+              Nhận hàm <code>setKeyword</code> từ <code>App</code>. Mỗi khi người dùng gõ phím vào ô tìm kiếm, sự kiện <code>onChange</code> sẽ kích hoạt hàm này kèm giá trị chuỗi nhập vào <code>e.target.value</code>, giúp cập nhật tức thời state <code>kw</code> tại <code>App</code>.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>AddUser</strong></td>
+            <td><span class="code-pill">onAdd</span></td>
+            <td><span class="type-pill">Function (callback)</span></td>
+            <td>Cha ➔ Con (callback kích hoạt ngược lên Cha)</td>
+            <td>
+              Nhận hàm <code>setNewUser</code> từ <code>App</code>. Khi người dùng hoàn tất điền form và nhấn "Thêm người dùng", hàm này được gọi và truyền đối tượng <code>user</code> vừa tạo lên lưu vào state <code>newUser</code> của <code>App</code>.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>ResultTable</strong></td>
+            <td><span class="code-pill">keyword</span></td>
+            <td><span class="type-pill">String</span></td>
+            <td>Cha ➔ Con (truyền giá trị dữ liệu)</td>
+            <td>
+              Nhận giá trị chuỗi từ khóa <code>kw</code> hiện tại từ <code>App</code>. <code>ResultTable</code> dùng prop này trong hàm <code>users.filter()</code> để so khớp (không phân biệt hoa thường) với <code>name</code> và <code>username</code>, từ đó quyết định những dòng nào được hiển thị trên bảng.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>ResultTable</strong></td>
+            <td><span class="code-pill">user</span></td>
+            <td><span class="type-pill">Object | null</span></td>
+            <td>Cha ➔ Con (truyền đối tượng dữ liệu)</td>
+            <td>
+              Nhận đối tượng người dùng mới được lưu ở state <code>newUser</code> của <code>App</code>. <code>ResultTable</code> dùng hook <code>useEffect([user])</code> để lắng nghe khi prop này khác <code>null</code>, lập tức thêm đối tượng đó vào mảng danh sách <code>users</code> nội bộ.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>ResultTable</strong></td>
+            <td><span class="code-pill">onAdded</span></td>
+            <td><span class="type-pill">Function (callback)</span></td>
+            <td>Cha ➔ Con (callback kích hoạt ngược lên Cha)</td>
+            <td>
+              Nhận hàm callback <code>() =&gt; setNewUser(null)</code> từ <code>App</code>. Sau khi <code>ResultTable</code> đã thêm thành công người dùng mới vào mảng <code>users</code>, hàm này được kích hoạt để đưa state <code>newUser</code> ở <code>App</code> về lại <code>null</code>, ngăn chặn việc re-render lặp lại không mong muốn.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- MỤC 4: BÁO CÁO LỖI / WARNING & CÁCH KHẮC PHỤC -->
+    <section class="report-section" id="bugs-errors">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <h2 class="section-title">Lỗi (Warning / Error) gặp phải trong quá trình code và Giải pháp</h2>
+      </div>
+
+      <p class="explain-text" style="margin-bottom: 1.5rem;">
+        Trong quá trình hiện thực mã nguồn theo tài liệu hướng dẫn thực hành, em đã gặp phải các lỗi và cảnh báo điển hình sau:
+      </p>
+
+      <!-- Lỗi 1 -->
+      <div class="bug-card">
+        <div class="bug-header">
+          <span class="bug-tag danger">Lỗi Error nghiêm trọng</span>
+          <div class="bug-title">Lỗi 1: "Too many re-renders. React limits the number of renders to prevent an infinite loop"</div>
+        </div>
+
+        <div class="explain-text">
+          <p><strong>1. Hiện tượng &amp; Thông báo lỗi:</strong></p>
+          <p style="color: #f87171; font-family: 'JetBrains Mono'; font-size: 0.88rem; background: rgba(239,68,68,0.1); padding: 0.6rem 0.85rem; border-radius: 6px; margin: 0.5rem 0;">
+            Uncaught Error: Too many re-renders. React limits the number of renders to prevent an infinite loop.
+          </p>
+          <p>
+            Khi mở form thêm người dùng (<code>AddUser</code>), trang web lập tức bị treo hoặc crash trắng màn hình với thông báo lỗi đỏ rực trong DevTools Console.
+          </p>
+
+          <p style="margin-top: 0.75rem;"><strong>2. Nguyên nhân sâu xa:</strong></p>
+          <p>
+            Trong tài liệu hướng dẫn mẫu tại trang 6 có đoạn code cho nút bấm "Hủy":<br />
+            <code>&lt;button onClick={setAdding(false)}&gt;Hủy&lt;/button&gt;</code>.<br />
+            Khi viết <code>onClick={setAdding(false)}</code> (có cặp dấu ngoặc đơn gọi hàm ngay), JavaScript sẽ thực thi hàm <code>setAdding(false)</code> <strong>ngay trong giai đoạn render của component</strong> chứ không phải chờ người dùng bấm chuột (click). Khi <code>setAdding(false)</code> được gọi, nó làm thay đổi state, buộc React phải re-render component. Trong lần re-render tiếp theo, hàm lại tiếp tục bị gọi ngay lập tức, tạo thành một <strong>vòng lặp vô hạn (Infinite Render Loop)</strong>. React phát hiện số lần render vượt quá giới hạn an toàn nên đã ngắt luồng và ném ra ngoại lệ trên.
+          </p>
+
+          <p style="margin-top: 0.75rem;"><strong>3. Cách khắc phục:</strong></p>
+          <p>
+            Chuyển lời gọi hàm thành một <strong>hàm ẩn danh (Arrow Function callback)</strong> để React chỉ thực thi hàm khi sự kiện click thực sự diễn ra:
+          </p>
+        </div>
+
+        <div class="code-comparison">
+          <div class="code-block wrong">
+            <div class="code-header">
+              <span><i class="fas fa-times-circle" style="color: #ef4444;"></i> SAI: Gọi hàm ngay khi render</span>
+              <span>Lỗi vô hạn</span>
+            </div>
+            <pre><code>{/* Gọi hàm trực tiếp -> Infinite loop */}
+&lt;button <span class="highlight-err">onClick={setAdding(false)}</span>&gt;
+  Hủy
+&lt;/button&gt;</code></pre>
+          </div>
+
+          <div class="code-block right">
+            <div class="code-header">
+              <span><i class="fas fa-check-circle" style="color: #10b981;"></i> ĐÚNG: Bọc trong Arrow Function</span>
+              <span>Đã khắc phục</span>
+            </div>
+            <pre><code>{/* Chỉ gọi hàm khi người dùng click */}
+&lt;button <span class="highlight-fix">onClick={() =&gt; setAdding(false)}</span>&gt;
+  Hủy
+&lt;/button&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lỗi 2 -->
+      <div class="bug-card">
+        <div class="bug-header">
+          <span class="bug-tag danger">Lỗi Error Runtime</span>
+          <div class="bug-title">Lỗi 2: "TypeError: Cannot read properties of undefined (reading 'street')"</div>
+        </div>
+
+        <div class="explain-text">
+          <p><strong>1. Hiện tượng &amp; Thông báo lỗi:</strong></p>
+          <p style="color: #f87171; font-family: 'JetBrains Mono'; font-size: 0.88rem; background: rgba(239,68,68,0.1); padding: 0.6rem 0.85rem; border-radius: 6px; margin: 0.5rem 0;">
+            TypeError: Cannot read properties of undefined (reading 'street') at ResultTable
+          </p>
+          <p>
+            Khi người dùng thêm một đối tượng người dùng mới mà bỏ trống thông tin địa chỉ hoặc khi người dùng được import từ nguồn bên ngoài không có trường <code>address</code>, toàn bộ bảng bị sập hoàn toàn.
+          </p>
+
+          <p style="margin-top: 0.75rem;"><strong>2. Nguyên nhân sâu xa:</strong></p>
+          <p>
+            Tại đoạn render trong bảng: <code>&lt;td&gt;{u.address.street}, {u.address.suite}, {u.address.city}&lt;/td&gt;</code>, code giả định luôn luôn tồn tại đối tượng <code>u.address</code>. Khi <code>u.address</code> là <code>undefined</code> hoặc <code>null</code>, việc truy cập vào <code>u.address.street</code> sẽ làm JavaScript ném lỗi TypeError.
+          </p>
+
+          <p style="margin-top: 0.75rem;"><strong>3. Cách khắc phục:</strong></p>
+          <p>
+            Sử dụng toán tử kiểm tra an toàn <strong>Optional Chaining (<code>?.</code>)</strong> và kiểm tra đối tượng trước khi truy cập hoặc nối chuỗi:
+          </p>
+        </div>
+
+        <div class="code-comparison">
+          <div class="code-block wrong">
+            <div class="code-header">
+              <span><i class="fas fa-times-circle" style="color: #ef4444;"></i> SAI: Truy cập trực tiếp không kiểm tra</span>
+              <span>Dễ vỡ (Fragile)</span>
+            </div>
+            <pre><code>&lt;td&gt;
+  {<span class="highlight-err">u.address.street</span>}, 
+  {u.address.suite}, 
+  {u.address.city}
+&lt;/td&gt;</code></pre>
+          </div>
+
+          <div class="code-block right">
+            <div class="code-header">
+              <span><i class="fas fa-check-circle" style="color: #10b981;"></i> ĐÚNG: Kiểm tra an toàn trước khi hiển thị</span>
+              <span>An toàn &amp; Bền vững</span>
+            </div>
+            <pre><code>&lt;td&gt;
+  {<span class="highlight-fix">u.address ? [u.address.street, u.address.suite, u.address.city].filter(Boolean).join(", ") : "—"</span>}
+&lt;/td&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Warning 3 -->
+      <div class="bug-card">
+        <div class="bug-header">
+          <span class="bug-tag warning">Cảnh báo Console Warning</span>
+          <div class="bug-title">Lỗi 3: Xung đột ID trùng lặp Key &amp; Tham chiếu đối tượng lồng nhau khi Sửa (Deep Copy)</div>
+        </div>
+
+        <div class="explain-text">
+          <p><strong>1. Hiện tượng &amp; Cảnh báo:</strong></p>
+          <p>
+            • Khi xóa một người dùng ở giữa danh sách rồi thêm người dùng mới với công thức <code>id: prev.length + 1</code>, xuất hiện cảnh báo <code>Encountered two children with the same key</code> do ID mới bị trùng với ID cũ đã tồn tại.<br />
+            • Khi nhấn "Sửa" và gõ trong form, dữ liệu trên bảng hiển thị lại bị nhảy chữ theo cùng lúc dù người dùng chưa hề bấm nút "Lưu" (hiện tượng đột biến dữ liệu qua tham chiếu con trỏ - Mutating state directly).
+          </p>
+
+          <p style="margin-top: 0.75rem;"><strong>2. Nguyên nhân &amp; Cách khắc phục:</strong></p>
+          <p>
+            • <strong>Vấn đề ID:</strong> Công thức <code>prev.length + 1</code> chỉ đúng khi không có thao tác xóa phần tử. Khi xóa phần tử, độ dài mảng giảm xuống dẫn đến sinh ID đã tồn tại. Khắc phục bằng cách tính <code>Math.max(...prev.map(u =&gt; Number(u.id) || 0)) + 1</code> để đảm bảo ID luôn tăng dần và duy nhất tuyệt đối.<br />
+            • <strong>Vấn đề tham chiếu khi Sửa:</strong> Do đối tượng <code>address</code> là một object con nằm lồng trong <code>user</code>, thao tác shallow copy <code>{ ...user }</code> sẽ vẫn giữ nguyên tham chiếu vùng nhớ của <code>address</code>. Khi form sửa thay đổi <code>address.street</code>, nó vô tình sửa luôn dữ liệu trong mảng <code>users</code> của bảng. Khắc phục bằng cách sao chép sâu (Deep Copy): <code>setEditing({ ...u, address: { ...(u.address || {}) } })</code>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MỤC 5: KẾT QUẢ TRIỂN KHAI VÀ LIÊN KẾT HỆ THỐNG -->
+    <section class="report-section" id="deployment">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <h2 class="section-title">Kết quả Triển khai &amp; Đường dẫn Kiểm tra (Links)</h2>
+      </div>
+
+      <p class="explain-text">
+        Toàn bộ mã nguồn bài tập React CRUD và trang báo cáo này đã được hoàn thiện chuẩn chỉ, kiểm thử đầy đủ các chức năng (Create, Read, Update, Delete, Search) và triển khai tự động lên Hosting GitHub Pages với tên miền riêng được cấu hình SSL bảo mật:
+      </p>
+
+      <div class="links-box">
+        <!-- Live App Link -->
+        <a href="https://namhai23905.id.vn/baitapReact/index.html" target="_blank" rel="noopener noreferrer" class="link-card">
+          <div class="link-info">
+            <div class="link-icon" style="background: rgba(99, 102, 241, 0.2); color: #818cf8;">
+              <i class="fab fa-react"></i>
+            </div>
+            <div>
+              <div class="link-title">Link kết quả Ứng dụng React CRUD</div>
+              <div class="link-url">https://namhai23905.id.vn/baitapReact/index.html</div>
+            </div>
+          </div>
+          <i class="fas fa-external-link-alt" style="color: var(--text-subtle);"></i>
+        </a>
+
+        <!-- Report Link -->
+        <a href="https://namhai23905.id.vn/baitapReact/report.html" target="_blank" rel="noopener noreferrer" class="link-card">
+          <div class="link-info">
+            <div class="link-icon" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">
+              <i class="fas fa-file-invoice"></i>
+            </div>
+            <div>
+              <div class="link-title">Link báo cáo Ứng dụng React CRUD</div>
+              <div class="link-url">https://namhai23905.id.vn/baitapReact/report.html</div>
+            </div>
+          </div>
+          <i class="fas fa-external-link-alt" style="color: var(--text-subtle);"></i>
+        </a>
+
+        <!-- GitHub Repo Link -->
+        <a href="https://github.com/NamHaiIT2HUST/HaiNDN235321_20261_CNWeb" target="_blank" rel="noopener noreferrer" class="link-card">
+          <div class="link-info">
+            <div class="link-icon" style="background: rgba(255, 255, 255, 0.1); color: #f3f4f6;">
+              <i class="fab fa-github"></i>
+            </div>
+            <div>
+              <div class="link-title">GitHub Repository Mã nguồn</div>
+              <div class="link-url">github.com/NamHaiIT2HUST/HaiNDN235321_20261_CNWeb</div>
+            </div>
+          </div>
+          <i class="fas fa-external-link-alt" style="color: var(--text-subtle);"></i>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>
+      © 2026 <strong>Nguyễn Đào Nam Hải</strong> (MSSV: 235321) · 
+      Môn học: Công nghệ Web và dịch vụ trực tuyến (20261) · 
+      <a href="https://namhai23905.id.vn">namhai23905.id.vn</a>
+    </p>
+  </footer>
+
+</body>
+</html>
