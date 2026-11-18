@@ -8,7 +8,7 @@
   <!-- Google Fonts & Font Awesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
   <style>
@@ -156,7 +156,7 @@
 
     /* Container */
     .container {
-      max-width: 1050px;
+      max-width: 1080px;
       width: 100%;
       margin: 0 auto;
       padding: 2.5rem 1.5rem 5rem;
@@ -361,13 +361,6 @@
       width: 100%;
       position: relative;
     }
-    .tree-sub-row {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin-top: 1.5rem;
-      position: relative;
-    }
 
     /* Flowchart for State Lifting */
     .flowchart-wrapper {
@@ -466,42 +459,63 @@
       background: var(--surface-card);
       border: 1px solid var(--surface-border);
       border-radius: var(--radius-md);
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
+      padding: 1.75rem 1.5rem;
+      margin-bottom: 1.75rem;
+      transition: var(--transition);
+    }
+    .bug-card:hover {
+      border-color: rgba(99, 102, 241, 0.4);
     }
     .bug-header {
       display: flex;
       align-items: center;
       gap: 0.75rem;
       margin-bottom: 1rem;
+      flex-wrap: wrap;
     }
     .bug-tag {
       font-size: 0.75rem;
       font-weight: 700;
-      padding: 0.25rem 0.6rem;
+      padding: 0.25rem 0.65rem;
       border-radius: 4px;
       text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
     .bug-tag.danger {
       background: var(--danger-light);
       color: #fca5a5;
-      border: 1px solid rgba(239, 68, 68, 0.3);
+      border: 1px solid rgba(239, 68, 68, 0.35);
     }
     .bug-tag.warning {
       background: var(--warning-light);
       color: #fde68a;
-      border: 1px solid rgba(245, 158, 11, 0.3);
+      border: 1px solid rgba(245, 158, 11, 0.35);
     }
     .bug-title {
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 700;
       color: #fff;
+    }
+    .console-box {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      background: rgba(15, 23, 42, 0.85);
+      border-left: 4px solid #ef4444;
+      padding: 0.75rem 1rem;
+      border-radius: 4px;
+      margin: 0.6rem 0 1rem;
+      color: #fca5a5;
+      overflow-x: auto;
+    }
+    .console-box.warn {
+      border-left-color: #f59e0b;
+      color: #fde68a;
     }
     .code-comparison {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin: 1rem 0;
+      gap: 1.25rem;
+      margin: 1.25rem 0 0.5rem;
     }
     .code-block {
       background: #0b0f19;
@@ -516,9 +530,9 @@
       border-top: 3px solid #10b981;
     }
     .code-header {
-      padding: 0.5rem 0.85rem;
+      padding: 0.55rem 0.85rem;
       background: #111827;
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       font-weight: 700;
       display: flex;
       align-items: center;
@@ -537,22 +551,22 @@
     pre .highlight-err {
       color: #f87171;
       font-weight: 700;
-      background: rgba(239, 68, 68, 0.15);
+      background: rgba(239, 68, 68, 0.2);
       padding: 0 4px;
       border-radius: 2px;
     }
     pre .highlight-fix {
       color: #4ade80;
       font-weight: 700;
-      background: rgba(16, 185, 129, 0.15);
+      background: rgba(16, 185, 129, 0.2);
       padding: 0 4px;
       border-radius: 2px;
     }
 
-    /* Links Box */
-    .links-box {
+    /* Links Box - Redesigned to never truncate and look gorgeous */
+    .links-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 1.25rem;
       margin-top: 1.5rem;
     }
@@ -560,41 +574,80 @@
       background: var(--surface-card);
       border: 1px solid var(--surface-border);
       border-radius: var(--radius-md);
-      padding: 1.25rem;
+      padding: 1.4rem;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
+      gap: 1rem;
       text-decoration: none;
       color: #fff;
       transition: var(--transition);
+      position: relative;
+      overflow: hidden;
     }
     .link-card:hover {
       border-color: #6366f1;
-      transform: translateY(-2px);
-      background: #283548;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+      background: #253245;
     }
-    .link-info {
+    .link-card-top {
       display: flex;
       align-items: center;
       gap: 0.85rem;
     }
     .link-icon {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+    .link-card-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      min-width: 0;
+      flex: 1;
     }
     .link-title {
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 1.02rem;
+      color: #fff;
     }
-    .link-url {
-      font-size: 0.78rem;
-      color: var(--text-muted);
+    .link-card-badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .link-url-box {
+      background: #0b0f19;
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 0.85rem;
+      font-size: 0.82rem;
+      color: #94a3b8;
       font-family: 'JetBrains Mono', monospace;
+      word-break: break-all;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .link-action-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #a5b4fc;
+      margin-top: auto;
+    }
+    .link-card:hover .link-action-pill {
+      color: #fff;
     }
 
     /* Footer */
@@ -617,6 +670,7 @@
       .code-comparison { grid-template-columns: 1fr; }
       .tree { min-width: 100%; }
       .tree-row { flex-direction: column; align-items: center; gap: 1rem; }
+      .links-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -825,7 +879,7 @@
           <text x="755" y="312" fill="#94a3b8" font-size="12" text-anchor="middle">Cập nhật khi có user mới</text>
           <text x="755" y="334" fill="#fbbf24" font-size="11" font-family="JetBrains Mono" text-anchor="middle">Gọi onAdded() reset</text>
 
-          <!-- MŨI TÊN 1: SearchForm -> App (State Lifting Callback) -->
+          <!-- Markers -->
           <defs>
             <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
               <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8" />
@@ -982,23 +1036,24 @@
       </div>
 
       <p class="explain-text" style="margin-bottom: 1.5rem;">
-        Trong quá trình hiện thực mã nguồn theo tài liệu hướng dẫn thực hành, em đã gặp phải các lỗi và cảnh báo điển hình sau:
+        Trong quá trình hiện thực mã nguồn theo tài liệu hướng dẫn thực hành, ứng dụng đã ghi nhận và xử lý triệt để 4 lỗi cùng cảnh báo kỹ thuật quan trọng sau:
       </p>
 
       <!-- Lỗi 1 -->
       <div class="bug-card">
         <div class="bug-header">
           <span class="bug-tag danger">Lỗi Error nghiêm trọng</span>
-          <div class="bug-title">Lỗi 1: "Too many re-renders. React limits the number of renders to prevent an infinite loop"</div>
+          <div class="bug-title">Lỗi 1: Vòng lặp re-render vô hạn ("Too many re-renders")</div>
         </div>
 
         <div class="explain-text">
           <p><strong>1. Hiện tượng &amp; Thông báo lỗi:</strong></p>
-          <p style="color: #f87171; font-family: 'JetBrains Mono'; font-size: 0.88rem; background: rgba(239,68,68,0.1); padding: 0.6rem 0.85rem; border-radius: 6px; margin: 0.5rem 0;">
+          <div class="console-box">
+            <i class="fas fa-times-circle" style="margin-right: 6px;"></i>
             Uncaught Error: Too many re-renders. React limits the number of renders to prevent an infinite loop.
-          </p>
+          </div>
           <p>
-            Khi mở form thêm người dùng (<code>AddUser</code>), trang web lập tức bị treo hoặc crash trắng màn hình với thông báo lỗi đỏ rực trong DevTools Console.
+            Khi người dùng mở form thêm người dùng (<code>AddUser</code>), trang web lập tức bị treo hoặc crash trắng màn hình với thông báo lỗi đỏ rực trong DevTools Console.
           </p>
 
           <p style="margin-top: 0.75rem;"><strong>2. Nguyên nhân sâu xa:</strong></p>
@@ -1043,16 +1098,17 @@
       <div class="bug-card">
         <div class="bug-header">
           <span class="bug-tag danger">Lỗi Error Runtime</span>
-          <div class="bug-title">Lỗi 2: "TypeError: Cannot read properties of undefined (reading 'street')"</div>
+          <div class="bug-title">Lỗi 2: Sập giao diện khi đọc thuộc tính lồng nhau ("Cannot read properties of undefined")</div>
         </div>
 
         <div class="explain-text">
           <p><strong>1. Hiện tượng &amp; Thông báo lỗi:</strong></p>
-          <p style="color: #f87171; font-family: 'JetBrains Mono'; font-size: 0.88rem; background: rgba(239,68,68,0.1); padding: 0.6rem 0.85rem; border-radius: 6px; margin: 0.5rem 0;">
+          <div class="console-box">
+            <i class="fas fa-times-circle" style="margin-right: 6px;"></i>
             TypeError: Cannot read properties of undefined (reading 'street') at ResultTable
-          </p>
+          </div>
           <p>
-            Khi người dùng thêm một đối tượng người dùng mới mà bỏ trống thông tin địa chỉ hoặc khi người dùng được import từ nguồn bên ngoài không có trường <code>address</code>, toàn bộ bảng bị sập hoàn toàn.
+            Khi người dùng thêm một đối tượng người dùng mới mà bỏ trống thông tin địa chỉ hoặc khi người dùng được nạp từ nguồn dữ liệu không có trường <code>address</code>, toàn bộ bảng bị sập hoàn toàn.
           </p>
 
           <p style="margin-top: 0.75rem;"><strong>2. Nguyên nhân sâu xa:</strong></p>
@@ -1062,7 +1118,7 @@
 
           <p style="margin-top: 0.75rem;"><strong>3. Cách khắc phục:</strong></p>
           <p>
-            Sử dụng toán tử kiểm tra an toàn <strong>Optional Chaining (<code>?.</code>)</strong> và kiểm tra đối tượng trước khi truy cập hoặc nối chuỗi:
+            Sử dụng kiểm tra an toàn hoặc toán tử <strong>Optional Chaining (<code>?.</code>)</strong> trước khi truy cập và hiển thị chuỗi:
           </p>
         </div>
 
@@ -1091,27 +1147,116 @@
         </div>
       </div>
 
-      <!-- Warning 3 -->
+      <!-- Lỗi 3 -->
       <div class="bug-card">
         <div class="bug-header">
           <span class="bug-tag warning">Cảnh báo Console Warning</span>
-          <div class="bug-title">Lỗi 3: Xung đột ID trùng lặp Key &amp; Tham chiếu đối tượng lồng nhau khi Sửa (Deep Copy)</div>
+          <div class="bug-title">Lỗi 3: Xung đột ID trùng lặp Key khi Thêm người dùng sau khi Xóa ("Duplicate Key")</div>
         </div>
 
         <div class="explain-text">
-          <p><strong>1. Hiện tượng &amp; Cảnh báo:</strong></p>
+          <p><strong>1. Hiện tượng &amp; Cảnh báo Console:</strong></p>
+          <div class="console-box warn">
+            <i class="fas fa-exclamation-triangle" style="margin-right: 6px;"></i>
+            Warning: Encountered two children with the same key, '10'. Keys should be unique so that components maintain their identity across updates.
+          </div>
           <p>
-            • Khi xóa một người dùng ở giữa danh sách rồi thêm người dùng mới với công thức <code>id: prev.length + 1</code>, xuất hiện cảnh báo <code>Encountered two children with the same key</code> do ID mới bị trùng với ID cũ đã tồn tại.<br />
-            • Khi nhấn "Sửa" và gõ trong form, dữ liệu trên bảng hiển thị lại bị nhảy chữ theo cùng lúc dù người dùng chưa hề bấm nút "Lưu" (hiện tượng đột biến dữ liệu qua tham chiếu con trỏ - Mutating state directly).
+            Ban đầu danh sách có 10 người dùng với ID từ 1 đến 10. Khi người dùng bấm xóa người dùng ở giữa danh sách (ví dụ người dùng #5), mảng còn lại 9 phần tử. Nếu tiếp tục bấm thêm một người dùng mới, phần tử mới lại được gán ID bằng <code>prev.length + 1 = 9 + 1 = 10</code>. Lúc này trong bảng xuất hiện 2 phần tử có cùng <code>key=10</code>, khiến React đưa ra cảnh báo trùng key và làm sai lệch thuật toán Virtual DOM Reconciliation.
           </p>
 
-          <p style="margin-top: 0.75rem;"><strong>2. Nguyên nhân &amp; Cách khắc phục:</strong></p>
+          <p style="margin-top: 0.75rem;"><strong>2. Nguyên nhân sâu xa:</strong></p>
           <p>
-            • <strong>Vấn đề ID:</strong> Công thức <code>prev.length + 1</code> chỉ đúng khi không có thao tác xóa phần tử. Khi xóa phần tử, độ dài mảng giảm xuống dẫn đến sinh ID đã tồn tại. Khắc phục bằng cách tính <code>Math.max(...prev.map(u =&gt; Number(u.id) || 0)) + 1</code> để đảm bảo ID luôn tăng dần và duy nhất tuyệt đối.<br />
-            • <strong>Vấn đề tham chiếu khi Sửa:</strong> Do đối tượng <code>address</code> là một object con nằm lồng trong <code>user</code>, thao tác shallow copy <code>{ ...user }</code> sẽ vẫn giữ nguyên tham chiếu vùng nhớ của <code>address</code>. Khi form sửa thay đổi <code>address.street</code>, nó vô tình sửa luôn dữ liệu trong mảng <code>users</code> của bảng. Khắc phục bằng cách sao chép sâu (Deep Copy): <code>setEditing({ ...u, address: { ...(u.address || {}) } })</code>.
+            Công thức <code>prev.length + 1</code> chỉ đúng khi danh sách chỉ tăng mà không bao giờ bị xóa. Khi có thao tác xóa phần tử, độ dài mảng giảm xuống nên không còn tương ứng với giá trị ID lớn nhất hiện tại.
+          </p>
+
+          <p style="margin-top: 0.75rem;"><strong>3. Cách khắc phục:</strong></p>
+          <p>
+            Sử dụng <code>Math.max()</code> duyệt qua toàn bộ các ID hiện có để tìm ID lớn nhất rồi cộng thêm 1, đảm bảo ID luôn tăng dần và duy nhất tuyệt đối:
           </p>
         </div>
+
+        <div class="code-comparison">
+          <div class="code-block wrong">
+            <div class="code-header">
+              <span><i class="fas fa-times-circle" style="color: #ef4444;"></i> SAI: Dựa vào độ dài mảng prev.length</span>
+              <span>Dễ trùng Key</span>
+            </div>
+            <pre><code>// Khi xóa bớt rồi thêm mới -> Trùng ID đã có!
+setUsers((prev) => [
+  ...prev, 
+  { ...user, <span class="highlight-err">id: prev.length + 1</span> }
+]);</code></pre>
+          </div>
+
+          <div class="code-block right">
+            <div class="code-header">
+              <span><i class="fas fa-check-circle" style="color: #10b981;"></i> ĐÚNG: Tìm Max ID hiện có trong danh sách</span>
+              <span>Duy nhất 100%</span>
+            </div>
+            <pre><code>// ID luôn lớn hơn ID cao nhất trong mảng
+setUsers((prev) => {
+  <span class="highlight-fix">const nextId = prev.length > 0 
+    ? Math.max(...prev.map(u => Number(u.id) || 0)) + 1 
+    : 1;</span>
+  return [...prev, { ...user, id: nextId }];
+});</code></pre>
+          </div>
+        </div>
       </div>
+
+      <!-- Lỗi 4 -->
+      <div class="bug-card">
+        <div class="bug-header">
+          <span class="bug-tag warning">Lỗi Logic Giao diện &amp; Tham chiếu</span>
+          <div class="bug-title">Lỗi 4: Đột biến State qua tham chiếu do Shallow Copy đối tượng lồng nhau khi Sửa (Deep Copy)</div>
+        </div>
+
+        <div class="explain-text">
+          <p><strong>1. Hiện tượng sai lệch logic:</strong></p>
+          <div class="console-box warn">
+            <i class="fas fa-bug" style="margin-right: 6px;"></i>
+            Bug Logic: Khi người dùng bấm nút "Sửa" và gõ thay đổi địa chỉ trên form modal, dữ liệu dòng tương ứng trên bảng ngoài tự động nhảy chữ theo thời gian thực dù người dùng CHƯA bấm "Lưu". Nếu bấm "Hủy", dữ liệu gốc trong bảng vẫn bị thay đổi và không thể khôi phục!
+          </div>
+
+          <p style="margin-top: 0.75rem;"><strong>2. Nguyên nhân sâu xa:</strong></p>
+          <p>
+            Trong JavaScript, toán tử spread <code>{ ...user }</code> chỉ thực hiện sao chép nông (Shallow Copy) ở tầng ngoài cùng. Đối tượng con <code>user.address</code> vẫn dùng chung con trỏ tham chiếu vùng nhớ với đối tượng trong state <code>users</code> của bảng. Khi form sửa thực hiện thay đổi trường con <code>editing.address.street = value</code>, nó đã vô tình trực tiếp sửa đổi (Mutate) state gốc, vi phạm nguyên tắc Immutability của React.
+          </p>
+
+          <p style="margin-top: 0.75rem;"><strong>3. Cách khắc phục:</strong></p>
+          <p>
+            Thực hiện sao chép sâu (Deep Copy) cả đối tượng con <code>address</code> khi mở form sửa:
+          </p>
+        </div>
+
+        <div class="code-comparison">
+          <div class="code-block wrong">
+            <div class="code-header">
+              <span><i class="fas fa-times-circle" style="color: #ef4444;"></i> SAI: Shallow copy giữ nguyên tham chiếu address</span>
+              <span>Đột biến State</span>
+            </div>
+            <pre><code>function editUser(user) {
+  // LỖI: address vẫn trỏ chung vùng nhớ trong users!
+  <span class="highlight-err">setEditing({ ...user });</span>
+}</code></pre>
+          </div>
+
+          <div class="code-block right">
+            <div class="code-header">
+              <span><i class="fas fa-check-circle" style="color: #10b981;"></i> ĐÚNG: Deep Copy cả đối tượng con address</span>
+              <span>Độc lập an toàn</span>
+            </div>
+            <pre><code>function editUser(user) {
+  // ĐÚNG: Tách rời hoàn toàn bản sao của address
+  <span class="highlight-fix">setEditing({
+    ...user,
+    address: { ...(user.address || { street: "", suite: "", city: "" }) }
+  });</span>
+}</code></pre>
+          </div>
+        </div>
+      </div>
+
     </section>
 
     <!-- MỤC 5: KẾT QUẢ TRIỂN KHAI VÀ LIÊN KẾT HỆ THỐNG -->
@@ -1125,47 +1270,85 @@
         Toàn bộ mã nguồn bài tập React CRUD và trang báo cáo này đã được hoàn thiện chuẩn chỉ, kiểm thử đầy đủ các chức năng (Create, Read, Update, Delete, Search) và triển khai tự động lên Hosting GitHub Pages với tên miền riêng được cấu hình SSL bảo mật:
       </p>
 
-      <div class="links-box">
+      <div class="links-grid">
         <!-- Live App Link -->
         <a href="https://namhai23905.id.vn/baitapReact/index.html" target="_blank" rel="noopener noreferrer" class="link-card">
-          <div class="link-info">
+          <div class="link-card-top">
             <div class="link-icon" style="background: rgba(99, 102, 241, 0.2); color: #818cf8;">
               <i class="fab fa-react"></i>
             </div>
-            <div>
+            <div class="link-card-text">
+              <span class="link-card-badge" style="color: #818cf8;">Ứng dụng Trực tiếp</span>
               <div class="link-title">Link kết quả Ứng dụng React CRUD</div>
-              <div class="link-url">https://namhai23905.id.vn/baitapReact/index.html</div>
             </div>
           </div>
-          <i class="fas fa-external-link-alt" style="color: var(--text-subtle);"></i>
+          <div class="link-url-box">
+            <span>https://namhai23905.id.vn/baitapReact/index.html</span>
+          </div>
+          <div class="link-action-pill">
+            <span>Mở ứng dụng ngay</span>
+            <i class="fas fa-arrow-right"></i>
+          </div>
         </a>
 
         <!-- Report Link -->
         <a href="https://namhai23905.id.vn/baitapReact/report.html" target="_blank" rel="noopener noreferrer" class="link-card">
-          <div class="link-info">
+          <div class="link-card-top">
             <div class="link-icon" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">
               <i class="fas fa-file-invoice"></i>
             </div>
-            <div>
+            <div class="link-card-text">
+              <span class="link-card-badge" style="color: #34d399;">Báo cáo Trực tuyến</span>
               <div class="link-title">Link báo cáo Ứng dụng React CRUD</div>
-              <div class="link-url">https://namhai23905.id.vn/baitapReact/report.html</div>
             </div>
           </div>
-          <i class="fas fa-external-link-alt" style="color: var(--text-subtle);"></i>
+          <div class="link-url-box">
+            <span>https://namhai23905.id.vn/baitapReact/report.html</span>
+          </div>
+          <div class="link-action-pill">
+            <span>Đang xem trang này</span>
+            <i class="fas fa-check"></i>
+          </div>
+        </a>
+
+        <!-- Word Doc Download Link -->
+        <a href="Bao_Cao_React_CRUD.docx" download class="link-card">
+          <div class="link-card-top">
+            <div class="link-icon" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8;">
+              <i class="fas fa-file-word"></i>
+            </div>
+            <div class="link-card-text">
+              <span class="link-card-badge" style="color: #38bdf8;">Tài liệu Nộp bài</span>
+              <div class="link-title">Tải File Báo cáo Word (.docx)</div>
+            </div>
+          </div>
+          <div class="link-url-box">
+            <span>Bao_Cao_React_CRUD.docx</span>
+          </div>
+          <div class="link-action-pill">
+            <span>Tải về máy</span>
+            <i class="fas fa-download"></i>
+          </div>
         </a>
 
         <!-- GitHub Repo Link -->
         <a href="https://github.com/NamHaiIT2HUST/HaiNDN235321_20261_CNWeb" target="_blank" rel="noopener noreferrer" class="link-card">
-          <div class="link-info">
+          <div class="link-card-top">
             <div class="link-icon" style="background: rgba(255, 255, 255, 0.1); color: #f3f4f6;">
               <i class="fab fa-github"></i>
             </div>
-            <div>
+            <div class="link-card-text">
+              <span class="link-card-badge" style="color: #94a3b8;">Mã nguồn</span>
               <div class="link-title">GitHub Repository Mã nguồn</div>
-              <div class="link-url">github.com/NamHaiIT2HUST/HaiNDN235321_20261_CNWeb</div>
             </div>
           </div>
-          <i class="fas fa-external-link-alt" style="color: var(--text-subtle);"></i>
+          <div class="link-url-box">
+            <span>github.com/NamHaiIT2HUST/HaiNDN235321_20261_CNWeb</span>
+          </div>
+          <div class="link-action-pill">
+            <span>Xem mã nguồn</span>
+            <i class="fas fa-code-branch"></i>
+          </div>
         </a>
       </div>
     </section>

@@ -1041,7 +1041,6 @@
       const [users, setUsers] = React.useState([]);
       const [loading, setLoading] = React.useState(true);
       const [editing, setEditing] = React.useState(null);
-      const [deleteConfirmId, setDeleteConfirmId] = React.useState(null);
 
       // 1. Tải danh sách người dùng ban đầu từ API
       React.useEffect(() => {
@@ -1114,12 +1113,11 @@
         setEditing(null);
       };
 
-      // 5. Xóa người dùng bằng Array.filter()
+      // 5. Xóa người dùng trực tiếp bằng Array.filter() (chuẩn theo Bước 7 PDF)
       const removeUser = (id) => {
         const deletedUser = users.find(u => u.id === id);
         setUsers((prev) => prev.filter((u) => u.id !== id));
-        setDeleteConfirmId(null);
-        if (onNotify) onNotify(`Đã xóa người dùng: ${deletedUser ? deletedUser.name : '#' + id}`, "danger");
+        if (onNotify) onNotify(`Đã xóa thành công người dùng: ${deletedUser ? deletedUser.name : '#' + id}`, "danger");
       };
 
       // 6. Lọc danh sách theo keyword (name hoặc username)
@@ -1223,8 +1221,8 @@
                             </button>
                             <button
                               className="btn-delete"
-                              onClick={() => setDeleteConfirmId(u.id)}
-                              title="Xóa người dùng"
+                              onClick={() => removeUser(u.id)}
+                              title="Xóa người dùng (không cần xác nhận theo đề bài)"
                             >
                               <i className="fas fa-trash"></i> Xóa
                             </button>
@@ -1362,36 +1360,6 @@
                     </button>
                   </div>
                 </form>
-              </div>
-            </div>
-          )}
-
-          {/* CONFIRM DELETE MODAL */}
-          {deleteConfirmId && (
-            <div className="modal-overlay" onClick={() => setDeleteConfirmId(null)}>
-              <div className="modal-content" style={{ maxWidth: "420px" }} onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header">
-                  <h3 className="modal-title" style={{ color: "#ef4444" }}>
-                    <i className="fas fa-exclamation-triangle"></i>
-                    Xác nhận xóa
-                  </h3>
-                  <button className="modal-close" onClick={() => setDeleteConfirmId(null)}>
-                    <i className="fas fa-times"></i>
-                  </button>
-                </div>
-                <div className="modal-body">
-                  <p style={{ color: "var(--text)" }}>
-                    Bạn có chắc chắn muốn xóa người dùng #{deleteConfirmId} không? Hành động này sẽ loại bỏ người dùng khỏi bảng hiển thị.
-                  </p>
-                </div>
-                <div className="modal-footer">
-                  <button className="btn btn-secondary" onClick={() => setDeleteConfirmId(null)}>
-                    Hủy bỏ
-                  </button>
-                  <button className="btn btn-danger" onClick={() => removeUser(deleteConfirmId)}>
-                    <i className="fas fa-trash-alt"></i> Xóa ngay
-                  </button>
-                </div>
               </div>
             </div>
           )}
